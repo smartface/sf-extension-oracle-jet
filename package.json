@@ -1,0 +1,29 @@
+{
+  "name": "sf-extension-jet",
+  "version": "1.0.0",
+  "description": "Utils Extension for Oracle JET",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "smartface",
+    "extension",
+    "jet",
+    "oracle",
+    "javascript"
+  ],
+  "author": {
+    "name": "Smartface",
+    "email": "info@smartface.io",
+    "url": "http://smartface.io"
+  },
+  "license": "ISC",
+  "homepage": "https://github.com/smartface/sf-extension-jet#readme",
+  "maintainers": [
+    {
+      "name": "deployer",
+      "email": "info@smartface.io"
+    }
+  ]
+}
