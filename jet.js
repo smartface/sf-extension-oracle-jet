@@ -48,7 +48,19 @@ const JET = extend(WebView)(
     function (_super, params) {
         _super(this);
         
+        var _onDestory, _onDrill, _onOptionChange, _onSelectInput, _onViewportChange, _onViewportChangeInput ;
+        
         Object.defineProperties(this, {
+            "reloadJET": {
+                value: function(){
+                    this.loadFile(new File({path: "assets://jet/index.html"}));
+                    this.onShow = function(event) {
+            	        var myScript = "window.drawChart('" + JSON.stringify(jetData) + "');";
+                        this.evaluateJS(myScript, function(){});
+            	    }.bind(this);
+                },
+                enumerable: true
+            },
             "jetData": {
                 get: function(){
                     return jetData;
@@ -355,7 +367,72 @@ const JET = extend(WebView)(
                 },
                 enumerable: true
             }, 
+            "onDestory": {
+                get: function(){
+                    return _onDestory;
+                },
+                set: function(value){
+                    _onDestory = value;
+                },
+                enumerable: true
+            },
+            "onDrill": {
+                get: function(){
+                    return _onDrill;
+                },
+                set: function(value){
+                    _onDrill = value;
+                },
+                enumerable: true
+            }, 
+            "onOptionChange": {
+                get: function(){
+                    return _onOptionChange;
+                },
+                set: function(value){
+                    _onOptionChange = value;
+                },
+                enumerable: true
+            }, 
+            "onSelectInput": {
+                get: function(){
+                    return _onSelectInput;
+                },
+                set: function(value){
+                    _onSelectInput = value;
+                },
+                enumerable: true
+            }, 
+            "onViewportChange": {
+                get: function(){
+                    return _onViewportChange;
+                },
+                set: function(value){
+                    _onViewportChange = value;
+                },
+                enumerable: true
+            }, 
+            "onViewportChangeInput": {
+                get: function(){
+                    return _onViewportChangeInput;
+                },
+                set: function(value){
+                    _onViewportChangeInput = value;
+                },
+                enumerable: true
+            }, 
         });
+        
+        this.onChangedURL = function(event){
+            console.log("onChangedURL: " + event.url);
+            if(event.url.indexOf('jet://') != -1){
+                var queryString = event.url.replace('jet://','');
+                var jsonData = decodeURIComponent(queryString);
+                var object = JSON.parse(jsonData);
+                return false;
+            }
+            return true;
+        }
         
         // Assign parameters given in constructor
         if (params) {
@@ -365,15 +442,14 @@ const JET = extend(WebView)(
         }
         
         // after constructing
-        this.loadFile(new File({path: "assets://jet/index.html"}));
-        this.onShow = function(event) {
-	        var myScript = "window.drawChart('" + JSON.stringify(jetData) + "');";
-            this.evaluateJS(myScript, function(){});
-	    }.bind(this);
+        this.reloadJET();
     }
 );
 
 Object.defineProperties(JET, {
+    "setPath": {
+        value: {}
+    },
     "Type": {
         value: {},
         enumerable: true
