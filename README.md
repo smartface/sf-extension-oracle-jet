@@ -7,10 +7,10 @@ An extension that has all Oracle Jet Charts for Smartface Native Framework. For 
 ## Installation
 Oracle JET Charts extension can be installed via npm easily from our public npm repository. The installation is pretty easy via Smartface Cloud IDE.
 
-- Open scripts/package.json file inside your workspace.
-- Add Utility extension dependency as:`"sf-extension-oracle-jet": "^1.0.0"`
-- Run command `npm install` under the folder `scripts`
-- Finally require the class you want to use like that: `require("sf-extension-oracle-jet")`
+Run the following code in terminal
+```shell
+(cd ~/workspace/scripts && npm i -S sf-extension-oracle-jet)
+```
 
 ## How to use
 The folder `sample` holds example codes for each utility class. You can put them into your workspace and start using it.
