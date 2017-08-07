@@ -4,7 +4,8 @@
   "description": "Extension for Oracle JET",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "./scripts/postinstall.sh",
+    "uninstall": "./scripts/uninstall.sh"
   },
   "keywords": [
     "smartface",
@@ -20,10 +21,16 @@
   },
   "license": "ISC",
   "homepage": "https://github.com/smartface/sf-extension-oracle-jet#readme",
-  "maintainers": [
-    {
-      "name": "deployer",
+  "maintainers": [{
+      "name": "Smartface",
       "email": "info@smartface.io"
+    },
+    {
+      "name": "Metehan Toksoy",
+      "email": "mtehan.toksoy@smartface.io"
+    }, {
+      "name": "Alper Ozisik",
+      "email": "alper.ozisik@smartface.io"
     }
   ]
 }
