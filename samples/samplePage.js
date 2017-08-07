@@ -6,7 +6,7 @@ const Screen = require('sf-core/device/screen');
 const Button = require('sf-core/ui/button');
 const Font = require('sf-core/ui/font');
 const ScrollView = require('sf-core/ui/scrollview');
-const JetView = require('sf-extension-oracle-jet');
+const JET = require('sf-extension-oracle-jet');
 const AlertUtil = require('sf-extension-utils/alert');
 const HeaderBarItem = require('sf-core/ui/headerbaritem');
 const Router = require("sf-core/router");
@@ -62,17 +62,16 @@ var page1 = extend(Page)(
 		    }.bind(this)
 		});
 		
-		JetView.jetPath = "assets://jet/";
-		
 		// finding column count. Floor down 
 		var columnCount = Math.floor(Screen.width/(buttonWidth + buttonMargin*2));
 		// finding row count. Floor up 
         var rowCount = Math.ceil( (Object.keys(counters).length + 13) /(columnCount) );
 		
-		var myJetView = new JetView({
-		    flexGrow: 3,
-		    alignSelf: FlexLayout.AlignSelf.STRETCH,
+		var myJetView = new JET({
+		    jetPath: "assets://jet/"
 		});
+		myJetView.webView.flexGrow = 3;
+		myJetView.webView.alignSelf = FlexLayout.AlignSelf.STRETCH;
 		
 		var myScrollView = new ScrollView({
 		    flexGrow: 2,
@@ -166,10 +165,10 @@ var page1 = extend(Page)(
 			font: myFont,
 			textColor: Color.WHITE,
 			onPress: function(){
-			    var propertyValue = JetView.LegendPosition[Object.keys(JetView.LegendPosition)[legendPositionCounter]];
+			    var propertyValue = JET.LegendPosition[Object.keys(JET.LegendPosition)[legendPositionCounter]];
 			    myJetView.legend.position = propertyValue;
 			    AlertUtil.showAlert("LegendPosition: " + propertyValue);
-			    legendPositionCounter = ++legendPositionCounter % Object.keys(JetView.LegendPosition).length;
+			    legendPositionCounter = ++legendPositionCounter % Object.keys(JET.LegendPosition).length;
 				myJetView.refresh();
 			}
 		});
@@ -184,10 +183,10 @@ var page1 = extend(Page)(
 			font: myFont,
 			textColor: Color.WHITE,
 			onPress: function(){
-			    var propertyValue = JetView.LegendRendered[Object.keys(JetView.LegendRendered)[legendRenderedCounter]];
+			    var propertyValue = JET.LegendRendered[Object.keys(JET.LegendRendered)[legendRenderedCounter]];
 			    myJetView.legend.rendered = propertyValue;
 			    AlertUtil.showAlert("LegendRendered: " + propertyValue);
-			    legendRenderedCounter = ++legendRenderedCounter % Object.keys(JetView.LegendRendered).length;
+			    legendRenderedCounter = ++legendRenderedCounter % Object.keys(JET.LegendRendered).length;
 				myJetView.refresh();
 			}
 		});
@@ -202,10 +201,10 @@ var page1 = extend(Page)(
 			font: myFont,
 			textColor: Color.WHITE,
 			onPress: function(){
-			    var propertyValue = JetView.LegendScrolling[Object.keys(JetView.LegendScrolling)[legendScrollingCounter]];
+			    var propertyValue = JET.LegendScrolling[Object.keys(JET.LegendScrolling)[legendScrollingCounter]];
 			    myJetView.legend.rendered = propertyValue;
 			    AlertUtil.showAlert("LegendScrolling: " + propertyValue);
-			    legendScrollingCounter = ++legendScrollingCounter % Object.keys(JetView.LegendScrolling).length;
+			    legendScrollingCounter = ++legendScrollingCounter % Object.keys(JET.LegendScrolling).length;
 				myJetView.refresh();
 			}
 		});
@@ -265,10 +264,10 @@ var page1 = extend(Page)(
 			font: myFont,
 			textColor: Color.WHITE,
 			onPress: function(){
-			    var propertyValue = JetView.PlotAreaRendered[Object.keys(JetView.PlotAreaRendered)[plotAreaRenderedCounter]];
+			    var propertyValue = JET.PlotAreaRendered[Object.keys(JET.PlotAreaRendered)[plotAreaRenderedCounter]];
 			    myJetView.plotArea.rendered = propertyValue;
 			    AlertUtil.showAlert("PlotAreaRendered: " + propertyValue);
-			    plotAreaRenderedCounter = ++plotAreaRenderedCounter % Object.keys(JetView.PlotAreaRendered).length;
+			    plotAreaRenderedCounter = ++plotAreaRenderedCounter % Object.keys(JET.PlotAreaRendered).length;
 				myJetView.refresh();
 			}
 		});
@@ -299,17 +298,17 @@ var page1 = extend(Page)(
     			font: myFont,
     			textColor: Color.WHITE,
     			onPress: function(){
-    			    var propertyValue = JetView[this.text][Object.keys(JetView[this.text])[counters[this.propertyName]]];
+    			    var propertyValue = JET[this.text][Object.keys(JET[this.text])[counters[this.propertyName]]];
     			    myJetView[this.propertyName] = propertyValue;
     			    AlertUtil.showAlert(this.text + ": " + propertyValue);
-    			    counters[this.propertyName] = ++counters[this.propertyName] % Object.keys(JetView[this.text]).length;
+    			    counters[this.propertyName] = ++counters[this.propertyName] % Object.keys(JET[this.text]).length;
     				myJetView.refresh();
     			}
     		});
     		myScrollView.layout.addChild(btn);
 		});
 		
-		this.layout.addChild(myJetView);
+		this.layout.addChild(myJetView.webView);
 		this.layout.addChild(myScrollView);
 	}
 );

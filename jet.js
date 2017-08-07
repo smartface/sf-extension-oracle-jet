@@ -2,460 +2,492 @@ const extend    = require('js-base/core/extend');
 const WebView   = require("sf-core/ui/webview");
 const File      = require('sf-core/io/file');
 
-var jetData = {
-    observables: {},
-    observableArrays: {}
-};
-jetData.observables.typeValue = 'bar';
-jetData.observables.orientationValue = "vertical";
-jetData.observables.animationOnDisplayValue = 'none';
-jetData.observables.animationOnDataChangeValue = 'none';
-jetData.observables.hoverBehaviorValue = 'none';
-jetData.observables.coordinateSystemValue = "cartesian";
-jetData.observables.dataCursorValue = "auto";
-jetData.observables.dataCursorBehaviorValue  = "auto";
-jetData.observables.dragModeValue = "user";
-jetData.observables.drillingValue = "off";
-jetData.observables.hideAndShowBehaviorValue = "off";
-jetData.observables.initialZoomingValue = "none";
-jetData.observables.legendValue = {};
-jetData.observables.plotAreaValue = {};
-jetData.observables.selectionModeValue = "none";
-jetData.observables.sortingValue = "off";
-jetData.observables.splitDualYValue = "auto";
-jetData.observables.splitterPositionValue = null;
-jetData.observables.stackValue = 'off';
-jetData.observables.stackLabelValue = 'off';
-jetData.observables.styleDefaultsValue = {};
-jetData.observables.tooltipValue = {};
-jetData.observables.touchResponseValue = "auto";
-jetData.observables.trackResizeValue = "on"; 
-jetData.observables.translationsValue = {};
-jetData.observables.valueFormatsValue = {};
-jetData.observables.xAxisValue = {};
-jetData.observables.y2AxisValue = {};
-jetData.observables.yAxisValue = {};
-jetData.observables.zoomAndScrollValue = "off";
-jetData.observables.zoomDirectionValue = "auto"; 
-
-jetData.observableArrays.seriesValue = [{name: "Series 1", items: [42, 34]},
-                          {name: "Series 2", items: [55, 30]},
-                          {name: "Series 3", items: [36, 50]}];
-
-jetData.observableArrays.groupsValue = ["Group 1", "Group 2"];
-var _jetPath = "assets://jet/";
-
-const JET = extend(WebView)(
-    function (_super, params) {
-        _super(this);
+/**
+ * @class JET
+ * @since 1.0.0
+ * @see http://www.oracle.com/webfolder/technetwork/jet/jetCookbook.html?component=home&demo=rootVisualizations_childChart
+ * @see http://www.oracle.com/webfolder/technetwork/jet/jsdocs/oj.ojChart.html
+ * 
+ * An util class for Oracle JET Charts. 
+ * You can use this library by passing webView as contructor parameter or library will create WebView internally if you not provide.
+ * 
+ *      @example
+ *      const WebView = require('sf-core/ui/webview');
+ *      const JET = require('sf-extension-oracle-jet');
+ * 
+ *      var webView = new WebView({
+ *          height: 250,
+ *          width: 250,
+ *          alignSelf: FlexLayout.AlignSelf.STRETCH,
+ *      });
+ *      var jet = new JET({
+ *          jetPath: "assets://jet/",
+ *          webView: webView
+ *      });
+ *      myPage.layout.addChild(webView);
+ * 
+ *      @example
+ *      const JET = require('sf-extension-oracle-jet');
+ * 
+ *      var jetChart = new JET({
+ *          jetPath: "assets://jet/",
+ *          webView: webView
+ *      });
+ *      jetChart.webView.height = 250;
+ *      jetChart.webView.width = 250;
+ *      jetChart.webView.alignSelf = FlexLayout.AlignSelf.STRETCH;
+ *      myPage.layout.addChild(jetChart.webView);
+ * 
+ * @param {Object} params
+ * @param {UI.WebView} params.webView
+ * @param {String} params.jetPath
+ */
+function JET(params){
+    var _webView = params.webView || new WebView();
+    
+    var _jetPath = "assets://jet/index.html";
+    var jetData = generateDefaultJetData();
+    var _onDestory, _onDrill, _onOptionChange, _onSelectInput, _onViewportChange, _onViewportChangeInput ;
         
-        var _onDestory, _onDrill, _onOptionChange, _onSelectInput, _onViewportChange, _onViewportChangeInput ;
-        Object.defineProperties(this, {
-            "reloadJET": {
-                value: function(){
-                    this.loadFile(new File({path: _jetPath}));
-                    this.onShow = function(event) {
-            	        var myScript = "window.drawChart('" + JSON.stringify(jetData) + "');";
-                        this.evaluateJS(myScript, function(){});
-            	    }.bind(this);
-                },
-                enumerable: true
+    Object.defineProperties(this, {
+        /**
+         * The directory that contains jet files. By default it is "assets://jet/index.html".
+         * 
+         * @property {String} [ jetPath = "assets://jet/index.html" ]
+         * @android
+         * @ios
+         * @since 1.0.0
+         */ 
+        "jetPath": {
+            get: function(){
+                return _jetPath;
             },
-            "jetData": {
-                get: function(){
-                    return jetData;
-                },
-                set: function(value){
-                    jetData = value;
-                },
-                enumerable: true
+            set: function(value){
+                _jetPath = value.slice(-1) === '/' ? value + "index.html" : value + "/index.html";
             },
-            "series": {
-                get: function(){
-                    return jetData.observableArrays.seriesValue;
-                },
-                set: function(value){
-                    jetData.observableArrays.seriesValue = value;
-                },
-                enumerable: true
-            },
-            "groups": {
-                get: function(){
-                    return jetData.observableArrays.groupsValue;
-                },
-                set: function(value){
-                    jetData.observableArrays.groupsValue = value
-                },
-                enumerable: true
-            },
-            "type": {
-                get: function(){
-                    return jetData.observables.typeValue;
-                },
-                set: function(value){
-                    jetData.observables.typeValue = value;
-                },
-                enumerable: true
-            },
-            "orientation": {
-                get: function(){
-                    return jetData.observables.orientationValue;
-                },
-                set: function(value){
-                    jetData.observables.orientationValue = value;
-                },
-                enumerable: true
-            },
-            "animationOnDisplay": {
-                get: function(){
-                    return jetData.observables.animationOnDisplayValue;
-                },
-                set: function(value){
-                    jetData.observables.animationOnDisplayValue = value;
-                },
-                enumerable: true
-            },
-            "animationOnDataChange": {
-                get: function(){
-                    return jetData.observables.animationOnDataChangeValue;
-                },
-                set: function(value){
-                    jetData.observables.animationOnDataChangeValue = value;
-                },
-                enumerable: true
-            },
-            "hoverBehavior": {
-                get: function(){
-                    return jetData.observables.hoverBehaviorValue;
-                },
-                set: function(value){
-                    jetData.observables.hoverBehaviorValue = value
-                },
-                enumerable: true
-            },
-            "coordinateSystem ": {
-                get: function(){
-                    return jetData.observables.coordinateSystemValue ;
-                },
-                set: function(value){
-                    jetData.observables.coordinateSystemValue = value;
-                },
-                enumerable: true
-            },
-            "dataCursor ": {
-                get: function(){
-                    return jetData.observables.dataCursorValue ;
-                },
-                set: function(value){
-                    jetData.observables.dataCursorValue = value;
-                },
-                enumerable: true
-            },
-            "dataCursorBehavior ": {
-                get: function(){
-                    return jetData.observables.dataCursorBehaviorValue ;
-                },
-                set: function(value){
-                    jetData.observables.dataCursorBehaviorValue = value;
-                },
-                enumerable: true
-            },
-            "dragMode ": {
-                get: function(){
-                    return jetData.observables.dragModeValue ;
-                },
-                set: function(value){
-                    jetData.observables.dragModeValue = value;
-                },
-                enumerable: true
-            },
-            "drilling  ": {
-                get: function(){
-                    return jetData.observables.drillingValue  ;
-                },
-                set: function(value){
-                    jetData.observables.drillingValue = value;
-                },
-                enumerable: true
-            },
-            "hideAndShowBehavior  ": {
-                get: function(){
-                    return jetData.observables.hideAndShowBehaviorValue  ;
-                },
-                set: function(value){
-                    jetData.observables.hideAndShowBehaviorValue = value;
-                },
-                enumerable: true
-            },
-            "initialZooming  ": {
-                get: function(){
-                    return jetData.observables.initialZoomingValue  ;
-                },
-                set: function(value){
-                    jetData.observables.initialZoomingValue = value;
-                },
-                enumerable: true
-            },
-            "legend": {
-                get: function(){
-                    return jetData.observables.legendValue  ;
-                },
-                set: function(value){
-                    jetData.observables.legendValue = value;
-                },
-                enumerable: true
-            },
-            "plotArea": {
-                get: function(){
-                    return jetData.observables.plotAreaValue  ;
-                },
-                set: function(value){
-                    jetData.observables.plotAreaValue = value;
-                },
-                enumerable: true
-            },
-            "selectionMode": {
-                get: function(){
-                    return jetData.observables.selectionModeValue  ;
-                },
-                set: function(value){
-                    jetData.observables.selectionModeValue = value;
-                },
-                enumerable: true
-            },
-            "sorting": {
-                get: function(){
-                    return jetData.observables.sortingValue  ;
-                },
-                set: function(value){
-                    jetData.observables.sortingValue = value;
-                },
-                enumerable: true
-            },
-            "splitDualY": {
-                get: function(){
-                    return jetData.observables.splitDualYValue  ;
-                },
-                set: function(value){
-                    jetData.observables.splitDualYValue = value;
-                },
-                enumerable: true
-            },
-            "splitterPosition": {
-                get: function(){
-                    return jetData.observables.splitterPositionValue  ;
-                },
-                set: function(value){
-                    jetData.observables.splitterPositionValue = value;
-                },
-                enumerable: true
-            },
-            "stack": {
-                get: function(){
-                    return jetData.observables.stackValue;
-                },
-                set: function(value){
-                    jetData.observables.stackValue = value;
-                },
-                enumerable: true
-            },
-            "stackLabel": {
-                get: function(){
-                    return jetData.observables.stackLabelValue;
-                },
-                set: function(value){
-                    jetData.observables.stackLabelValue = value;
-                },
-                enumerable: true
-            },
-            "styleDefaults": {
-                get: function(){
-                    return jetData.observables.styleDefaultsValue  ;
-                },
-                set: function(value){
-                    jetData.observables.styleDefaultsValue = value;
-                },
-                enumerable: true
-            },
-            "tooltip": {
-                get: function(){
-                    return jetData.observables.tooltipValue  ;
-                },
-                set: function(value){
-                    jetData.observables.tooltipValue = value;
-                },
-                enumerable: true
-            },
-            "touchResponse": {
-                get: function(){
-                    return jetData.observables.touchResponseValue  ;
-                },
-                set: function(value){
-                    jetData.observables.touchResponseValue = value;
-                },
-                enumerable: true
-            },
-            "trackResize": {
-                get: function(){
-                    return jetData.observables.trackResizeValue;
-                },
-                set: function(value){
-                    jetData.observables.trackResizeValue = value;
-                },
-                enumerable: true
-            },
-            "translations": {
-                get: function(){
-                    return jetData.observables.translationsValue;
-                },
-                set: function(value){
-                    jetData.observables.translationsValue = value;
-                },
-                enumerable: true
-            },
-            "valueFormats": {
-                get: function(){
-                    return jetData.observables.valueFormatsValue;
-                },
-                set: function(value){
-                    jetData.observables.valueFormatsValue = value;
-                },
-                enumerable: true
-            },
-            "xAxis": {
-                get: function(){
-                    return jetData.observables.xAxisValue;
-                },
-                set: function(value){
-                    jetData.observables.xAxisValue = value;
-                },
-                enumerable: true
-            },
-            "y2Axis": {
-                get: function(){
-                    return jetData.observables.y2AxisValue;
-                },
-                set: function(value){
-                    jetData.observables.y2AxisValue = value;
-                },
-                enumerable: true
-            },
-            "yAxis": {
-                get: function(){
-                    return jetData.observables.yAxisValue;
-                },
-                set: function(value){
-                    jetData.observables.yAxisValue = value;
-                },
-                enumerable: true
-            },     
-            "zoomAndScroll": {
-                get: function(){
-                    return jetData.observables.zoomAndScrollValue;
-                },
-                set: function(value){
-                    jetData.observables.zoomAndScrollValue = value;
-                },
-                enumerable: true
-            }, 
-            "zoomDirection": {
-                get: function(){
-                    return jetData.observables.zoomDirectionValue;
-                },
-                set: function(value){
-                    jetData.observables.zoomDirectionValue = value;
-                },
-                enumerable: true
-            }, 
-            "onDestory": {
-                get: function(){
-                    return _onDestory;
-                },
-                set: function(value){
-                    _onDestory = value;
-                },
-                enumerable: true
-            },
-            "onDrill": {
-                get: function(){
-                    return _onDrill;
-                },
-                set: function(value){
-                    _onDrill = value;
-                },
-                enumerable: true
-            }, 
-            "onOptionChange": {
-                get: function(){
-                    return _onOptionChange;
-                },
-                set: function(value){
-                    _onOptionChange = value;
-                },
-                enumerable: true
-            }, 
-            "onSelectInput": {
-                get: function(){
-                    return _onSelectInput;
-                },
-                set: function(value){
-                    _onSelectInput = value;
-                },
-                enumerable: true
-            }, 
-            "onViewportChange": {
-                get: function(){
-                    return _onViewportChange;
-                },
-                set: function(value){
-                    _onViewportChange = value;
-                },
-                enumerable: true
-            }, 
-            "onViewportChangeInput": {
-                get: function(){
-                    return _onViewportChangeInput;
-                },
-                set: function(value){
-                    _onViewportChangeInput = value;
-                },
-                enumerable: true
-            }, 
-        });
+            enumerable: true
+        },
         
-        this.onChangedURL = function(event){
-            console.log("onChangedURL: " + event.url);
-            if(event.url.indexOf('jet://') != -1){
-                var queryString = event.url.replace('jet://','');
-                var jsonData = decodeURIComponent(queryString);
-                var object = JSON.parse(jsonData);
-                return false;
-            }
-            return true;
+        /**
+         * The WebView for load and show Oracle Jet Charts inside of it. It should be provided via constructor. 
+         * If not given in constructor, webview will generated automatically.
+         * 
+         * @property {UI.WebView} webView
+         * @android
+         * @ios
+         * @since 1.0.0
+         */ 
+        "webView": {
+            get: function(){
+                return _webView;
+            },
+            set: function(value){
+                _webView = value;
+            },
+            enumerable: true
+        },
+        /**
+         * Refresh WebView and reload JET charts.
+         * 
+         * @method refresh
+         * @android
+         * @ios
+         * @since 1.0.0
+         */ 
+        "refresh": {
+            value: function(){
+                _webView.loadFile(new File({path: _jetPath}));
+                _webView.onShow = function(event) {
+        	        var myScript = "window.drawChart('" + JSON.stringify(jetData) + "');";
+                    _webView.evaluateJS(myScript, function(){});
+        	    };
+            },
+            enumerable: true
+        },
+        "jetData": {
+            get: function(){
+                return jetData;
+            },
+            set: function(value){
+                jetData = value;
+            },
+            enumerable: true
+        },
+        "series": {
+            get: function(){
+                return jetData.observableArrays.seriesValue;
+            },
+            set: function(value){
+                jetData.observableArrays.seriesValue = value;
+            },
+            enumerable: true
+        },
+        "groups": {
+            get: function(){
+                return jetData.observableArrays.groupsValue;
+            },
+            set: function(value){
+                jetData.observableArrays.groupsValue = value
+            },
+            enumerable: true
+        },
+        "type": {
+            get: function(){
+                return jetData.observables.typeValue;
+            },
+            set: function(value){
+                jetData.observables.typeValue = value;
+            },
+            enumerable: true
+        },
+        "orientation": {
+            get: function(){
+                return jetData.observables.orientationValue;
+            },
+            set: function(value){
+                jetData.observables.orientationValue = value;
+            },
+            enumerable: true
+        },
+        "animationOnDisplay": {
+            get: function(){
+                return jetData.observables.animationOnDisplayValue;
+            },
+            set: function(value){
+                jetData.observables.animationOnDisplayValue = value;
+            },
+            enumerable: true
+        },
+        "animationOnDataChange": {
+            get: function(){
+                return jetData.observables.animationOnDataChangeValue;
+            },
+            set: function(value){
+                jetData.observables.animationOnDataChangeValue = value;
+            },
+            enumerable: true
+        },
+        "hoverBehavior": {
+            get: function(){
+                return jetData.observables.hoverBehaviorValue;
+            },
+            set: function(value){
+                jetData.observables.hoverBehaviorValue = value
+            },
+            enumerable: true
+        },
+        "coordinateSystem ": {
+            get: function(){
+                return jetData.observables.coordinateSystemValue ;
+            },
+            set: function(value){
+                jetData.observables.coordinateSystemValue = value;
+            },
+            enumerable: true
+        },
+        "dataCursor ": {
+            get: function(){
+                return jetData.observables.dataCursorValue ;
+            },
+            set: function(value){
+                jetData.observables.dataCursorValue = value;
+            },
+            enumerable: true
+        },
+        "dataCursorBehavior ": {
+            get: function(){
+                return jetData.observables.dataCursorBehaviorValue ;
+            },
+            set: function(value){
+                jetData.observables.dataCursorBehaviorValue = value;
+            },
+            enumerable: true
+        },
+        "dragMode ": {
+            get: function(){
+                return jetData.observables.dragModeValue ;
+            },
+            set: function(value){
+                jetData.observables.dragModeValue = value;
+            },
+            enumerable: true
+        },
+        "drilling  ": {
+            get: function(){
+                return jetData.observables.drillingValue  ;
+            },
+            set: function(value){
+                jetData.observables.drillingValue = value;
+            },
+            enumerable: true
+        },
+        "hideAndShowBehavior  ": {
+            get: function(){
+                return jetData.observables.hideAndShowBehaviorValue  ;
+            },
+            set: function(value){
+                jetData.observables.hideAndShowBehaviorValue = value;
+            },
+            enumerable: true
+        },
+        "initialZooming  ": {
+            get: function(){
+                return jetData.observables.initialZoomingValue  ;
+            },
+            set: function(value){
+                jetData.observables.initialZoomingValue = value;
+            },
+            enumerable: true
+        },
+        "legend": {
+            get: function(){
+                return jetData.observables.legendValue  ;
+            },
+            set: function(value){
+                jetData.observables.legendValue = value;
+            },
+            enumerable: true
+        },
+        "plotArea": {
+            get: function(){
+                return jetData.observables.plotAreaValue  ;
+            },
+            set: function(value){
+                jetData.observables.plotAreaValue = value;
+            },
+            enumerable: true
+        },
+        "selectionMode": {
+            get: function(){
+                return jetData.observables.selectionModeValue  ;
+            },
+            set: function(value){
+                jetData.observables.selectionModeValue = value;
+            },
+            enumerable: true
+        },
+        "sorting": {
+            get: function(){
+                return jetData.observables.sortingValue  ;
+            },
+            set: function(value){
+                jetData.observables.sortingValue = value;
+            },
+            enumerable: true
+        },
+        "splitDualY": {
+            get: function(){
+                return jetData.observables.splitDualYValue  ;
+            },
+            set: function(value){
+                jetData.observables.splitDualYValue = value;
+            },
+            enumerable: true
+        },
+        "splitterPosition": {
+            get: function(){
+                return jetData.observables.splitterPositionValue  ;
+            },
+            set: function(value){
+                jetData.observables.splitterPositionValue = value;
+            },
+            enumerable: true
+        },
+        "stack": {
+            get: function(){
+                return jetData.observables.stackValue;
+            },
+            set: function(value){
+                jetData.observables.stackValue = value;
+            },
+            enumerable: true
+        },
+        "stackLabel": {
+            get: function(){
+                return jetData.observables.stackLabelValue;
+            },
+            set: function(value){
+                jetData.observables.stackLabelValue = value;
+            },
+            enumerable: true
+        },
+        "styleDefaults": {
+            get: function(){
+                return jetData.observables.styleDefaultsValue  ;
+            },
+            set: function(value){
+                jetData.observables.styleDefaultsValue = value;
+            },
+            enumerable: true
+        },
+        "tooltip": {
+            get: function(){
+                return jetData.observables.tooltipValue  ;
+            },
+            set: function(value){
+                jetData.observables.tooltipValue = value;
+            },
+            enumerable: true
+        },
+        "touchResponse": {
+            get: function(){
+                return jetData.observables.touchResponseValue  ;
+            },
+            set: function(value){
+                jetData.observables.touchResponseValue = value;
+            },
+            enumerable: true
+        },
+        "trackResize": {
+            get: function(){
+                return jetData.observables.trackResizeValue;
+            },
+            set: function(value){
+                jetData.observables.trackResizeValue = value;
+            },
+            enumerable: true
+        },
+        "translations": {
+            get: function(){
+                return jetData.observables.translationsValue;
+            },
+            set: function(value){
+                jetData.observables.translationsValue = value;
+            },
+            enumerable: true
+        },
+        "valueFormats": {
+            get: function(){
+                return jetData.observables.valueFormatsValue;
+            },
+            set: function(value){
+                jetData.observables.valueFormatsValue = value;
+            },
+            enumerable: true
+        },
+        "xAxis": {
+            get: function(){
+                return jetData.observables.xAxisValue;
+            },
+            set: function(value){
+                jetData.observables.xAxisValue = value;
+            },
+            enumerable: true
+        },
+        "y2Axis": {
+            get: function(){
+                return jetData.observables.y2AxisValue;
+            },
+            set: function(value){
+                jetData.observables.y2AxisValue = value;
+            },
+            enumerable: true
+        },
+        "yAxis": {
+            get: function(){
+                return jetData.observables.yAxisValue;
+            },
+            set: function(value){
+                jetData.observables.yAxisValue = value;
+            },
+            enumerable: true
+        },     
+        "zoomAndScroll": {
+            get: function(){
+                return jetData.observables.zoomAndScrollValue;
+            },
+            set: function(value){
+                jetData.observables.zoomAndScrollValue = value;
+            },
+            enumerable: true
+        }, 
+        "zoomDirection": {
+            get: function(){
+                return jetData.observables.zoomDirectionValue;
+            },
+            set: function(value){
+                jetData.observables.zoomDirectionValue = value;
+            },
+            enumerable: true
+        }, 
+        "onDestory": {
+            get: function(){
+                return _onDestory;
+            },
+            set: function(value){
+                _onDestory = value;
+            },
+            enumerable: true
+        },
+        "onDrill": {
+            get: function(){
+                return _onDrill;
+            },
+            set: function(value){
+                _onDrill = value;
+            },
+            enumerable: true
+        }, 
+        "onOptionChange": {
+            get: function(){
+                return _onOptionChange;
+            },
+            set: function(value){
+                _onOptionChange = value;
+            },
+            enumerable: true
+        }, 
+        "onSelectInput": {
+            get: function(){
+                return _onSelectInput;
+            },
+            set: function(value){
+                _onSelectInput = value;
+            },
+            enumerable: true
+        }, 
+        "onViewportChange": {
+            get: function(){
+                return _onViewportChange;
+            },
+            set: function(value){
+                _onViewportChange = value;
+            },
+            enumerable: true
+        }, 
+        "onViewportChangeInput": {
+            get: function(){
+                return _onViewportChangeInput;
+            },
+            set: function(value){
+                _onViewportChangeInput = value;
+            },
+            enumerable: true
+        }, 
+    });
+    
+    _webView.onChangedURL = function(event){
+        if(event.url.indexOf('jet://') != -1){
+            var queryString = event.url.replace('jet://','');
+            var jsonData = decodeURIComponent(queryString);
+            var object = JSON.parse(jsonData);
+            return false;
         }
-        
-        // Assign parameters given in constructor
-        if (params) {
-            for (var param in params) {
-                this[param] = params[param];
-            }
-        }
-        
-        // after constructing
-        this.reloadJET();
+        return true;
     }
-);
+    
+    // Assign parameters given in constructor
+    if (params) {
+        for (var param in params) {
+            this[param] = params[param];
+        }
+    }
+    
+    // after constructing
+    this.refresh();
+}
 
 Object.defineProperties(JET, {
-    "jetPath": {
-        get: function(){
-            return _jetPath;
-        },
-        set: function(value){
-            _jetPath = value.slice(-1) === '/' ? value + "index.html" : value + "/index.html";
-        },
-        enumerable: true
-    },
     "Type": {
         value: {},
         enumerable: true
@@ -979,5 +1011,49 @@ Object.defineProperties(JET.ZoomDirection,{
         enumerable: true
     }
 });
+
+function generateDefaultJetData(){
+    return {
+        observables: {
+            animationOnDataChangeValue  : 'none',
+            hideAndShowBehaviorValue    : "off",
+            animationOnDisplayValue     : 'none',
+            dataCursorBehaviorValue     : "auto",
+            coordinateSystemValue       : "cartesian",
+            splitterPositionValue       : null,
+            initialZoomingValue         : "none",
+            hoverBehaviorValue          : 'none',
+            selectionModeValue          : "none",
+            touchResponseValue          : "auto",
+            zoomAndScrollValue          : "off",
+            zoomDirectionValue          : "auto",
+            orientationValue            : "vertical",
+            trackResizeValue            : "on",
+            dataCursorValue             : "auto",
+            splitDualYValue             : "auto",
+            stackLabelValue             : 'off',
+            dragModeValue               : "user",
+            drillingValue               : "off",
+            sortingValue                : "off",
+            stackValue                  : 'off',
+            typeValue                   : 'bar',
+            styleDefaultsValue          : {},
+            translationsValue           : {},
+            valueFormatsValue           : {},
+            plotAreaValue               : {},
+            tooltipValue                : {},
+            legendValue                 : {},
+            y2AxisValue                 : {},
+            xAxisValue                  : {},
+            yAxisValue                  : {},
+        },
+        observableArrays: {
+            seriesValue : [ { name: "Series 1", items: [42, 34]},
+                            { name: "Series 2", items: [55, 30]},
+                            { name: "Series 3", items: [36, 50]} ],
+            groupsValue : ["Group 1", "Group 2"]
+        }
+    };
+}
 
 module.exports = JET;
