@@ -452,7 +452,7 @@ Object.defineProperties(JET, {
             return _jetPath;
         },
         set: function(value){
-            _jetPath = value.slice(-1) === '/' ? _jetPath + "index.html" : _jetPath + "/index.html";
+            _jetPath = value.slice(-1) === '/' ? value + "index.html" : value + "/index.html";
         },
         enumerable: true
     },
