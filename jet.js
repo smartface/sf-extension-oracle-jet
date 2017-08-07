@@ -43,17 +43,17 @@ jetData.observableArrays.seriesValue = [{name: "Series 1", items: [42, 34]},
                           {name: "Series 3", items: [36, 50]}];
 
 jetData.observableArrays.groupsValue = ["Group 1", "Group 2"];
+var _jetPath = "assets://jet/";
 
 const JET = extend(WebView)(
     function (_super, params) {
         _super(this);
         
         var _onDestory, _onDrill, _onOptionChange, _onSelectInput, _onViewportChange, _onViewportChangeInput ;
-        
         Object.defineProperties(this, {
             "reloadJET": {
                 value: function(){
-                    this.loadFile(new File({path: "assets://jet/index.html"}));
+                    this.loadFile(new File({path: _jetPath}));
                     this.onShow = function(event) {
             	        var myScript = "window.drawChart('" + JSON.stringify(jetData) + "');";
                         this.evaluateJS(myScript, function(){});
@@ -447,8 +447,14 @@ const JET = extend(WebView)(
 );
 
 Object.defineProperties(JET, {
-    "setPath": {
-        value: {}
+    "jetPath": {
+        get: function(){
+            return _jetPath;
+        },
+        set: function(value){
+            _jetPath = value.slice(-1) === '/' ? _jetPath + "index.html" : _jetPath + "/index.html";
+        },
+        enumerable: true
     },
     "Type": {
         value: {},
