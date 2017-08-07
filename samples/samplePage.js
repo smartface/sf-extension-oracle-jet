@@ -8,6 +8,8 @@ const Font = require('sf-core/ui/font');
 const ScrollView = require('sf-core/ui/scrollview');
 const JetView = require('sf-extension-jet');
 const AlertUtil = require('sf-extension-utils/alert');
+const HeaderBarItem = require('sf-core/ui/headerbaritem');
+const Router = require("sf-core/router");
 
 var myFont = Font.create(Font.DEFAULT, 10, Font.NORMAL);
 var counters = {
@@ -40,7 +42,27 @@ var buttonMargin = 2;
 var page1 = extend(Page)(
 	function(_super) {
 
-		_super(this);
+		_super(this, {
+		    onShow: function(){
+		        var itemPage1 = new HeaderBarItem({
+                    title: "Page 1",
+                    onPress: function() {
+                        Router.go('page1');
+                    }
+                });
+                var itemPage3 = new HeaderBarItem({
+                    title: "Page 3",
+                    onPress: function() {
+                        Router.go('page3');
+                    }
+                });
+                this.headerBar.setItems([itemPage1, itemPage3]);
+                this.headerBar.title = "Page 2";
+                this.headerBar.leftItemEnabled = false;
+		    }.bind(this)
+		});
+		
+		JetView.jetPath = "assets://jet/";
 		
 		// finding column count. Floor down 
 		var columnCount = Math.floor(Screen.width/(buttonWidth + buttonMargin*2));

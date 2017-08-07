@@ -25,7 +25,27 @@ var charts = [];
 var page1 = extend(Page)(
 	function(_super) {
 
-		_super(this);
+		_super(this, {
+		    onShow: function(){
+		        var itemPage1 = new HeaderBarItem({
+                    title: "Page 1",
+                    onPress: function() {
+                        Router.go('page1');
+                    }
+                });
+                var itemPage2 = new HeaderBarItem({
+                    title: "Page 2",
+                    onPress: function() {
+                        Router.go('page2');
+                    }
+                });
+                this.headerBar.setItems([itemPage1, itemPage2]);
+                this.headerBar.title = "Page 3";
+                this.headerBar.leftItemEnabled = false;
+		    }.bind(this)
+		});
+		
+		JetView.jetPath = "assets://jet/";
 		
 		generateCharts();
 		
