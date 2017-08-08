@@ -16,13 +16,13 @@ requirejs.config({
     paths:
     //injector:mainReleasePaths
     {
-        'knockout': 'libs/knockout/knockout-3.4.0.debug',
+        'knockout': 'libs/knockout/knockout-3.4.0',
         'jquery': 'libs/jquery/jquery-3.1.1',
         'jqueryui-amd': 'libs/jquery/jqueryui-amd-1.12.0',
         'promise': 'libs/es6-promise/es6-promise',
         'hammerjs': 'libs/hammer/hammer-2.0.8',
         'ojdnd': 'libs/dnd-polyfill/dnd-polyfill-1.0.0',
-        'ojs': 'libs/oj/v3.1.0/debug',
+        'ojs': 'libs/oj/v3.1.0/min',
         'ojL10n': 'libs/oj/v3.1.0/ojL10n',
         'ojtranslations': 'libs/oj/v3.1.0/resources',
         'text': 'libs/require/text',

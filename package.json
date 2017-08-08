@@ -1,6 +1,6 @@
 {
   "name": "sf-extension-oracle-jet",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Extension for Oracle JET",
   "main": "index.js",
   "scripts": {
