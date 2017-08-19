@@ -43,8 +43,8 @@ const File      = require('sf-core/io/file');
  * @param {String} params.jetPath
  */
 function JET(params){
+    params = params || {};
     var _webView = params.webView || new WebView();
-    
     var _jetPath = "assets://jet/index.html";
     var jetData = generateDefaultJetData();
     var _onDestory, _onDrill, _onOptionChange, _onSelectInput, _onViewportChange, _onViewportChangeInput ;
