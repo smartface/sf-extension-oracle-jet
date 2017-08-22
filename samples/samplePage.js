@@ -68,7 +68,25 @@ var page1 = extend(Page)(
 		var rowCount = Math.ceil((Object.keys(counters).length + 13) / (columnCount));
 
 		var myJetView = new JET({
-			jetPath: "assets://jet/"
+			jetPath: "assets://jet/",
+		    onDestory: function(data){
+		    	console.log("onDestory: " + JSON.stringify(data));
+		    },
+		    onDrill: function(data){
+		    	console.log("onDrill: " + JSON.stringify(data));
+		    },
+		    onOptionChange: function(data){
+		    	console.log("onOptionChange: " + JSON.stringify(data));
+		    },
+		    onSelectInput: function(data){
+		    	console.log("onSelectInput: " + JSON.stringify(data));
+		    },
+		    onViewportChange: function(data){
+		    	console.log("onViewportChange: " + JSON.stringify(data));
+		    },
+		    onViewportChangeInput: function(data){
+		    	console.log("onDestory: " + JSON.stringify(data));
+		    }
 		});
 		myJetView.webView.flexGrow = 3;
 		myJetView.webView.alignSelf = FlexLayout.AlignSelf.STRETCH;
