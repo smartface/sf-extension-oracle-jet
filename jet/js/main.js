@@ -66,28 +66,46 @@ var drawChart;
                     });
 
                     self.ojDestroy = function(event, data) {
-                        window.console.log("ojdestroy");
+                        var queryString = encodeURIComponent(JSON.stringify({
+                            event: "ojDestroy",
+                            data: data
+                        }));
+                        window.location = "jet://" + queryString;
                     };
                     self.ojDrill = function(event, data) {
-                        window.console.log("ojdrill");
+                        var queryString = encodeURIComponent(JSON.stringify({
+                            event: "ojDrill",
+                            data: data
+                        }));
+                        window.location = "jet://" + queryString;
                     };
                     self.ojOptionChange = function(event, ui) {
-                        window.console.log("ojoptionchange");
                         var queryString = encodeURIComponent(JSON.stringify({
                             event: "ojOptionChange",
                             data: ui
                         }));
-                        window.console.log("jet://" + queryString);
                         window.location = "jet://" + queryString;
                     };
                     self.ojSelectInput = function(event, data) {
-                        window.console.log("ojselectinput");
+                        var queryString = encodeURIComponent(JSON.stringify({
+                            event: "ojSelectInput",
+                            data: data
+                        }));
+                        window.location = "jet://" + queryString;
                     };
                     self.ojViewportChange = function(event, data) {
-                        window.console.log("ojviewportchange");
+                        var queryString = encodeURIComponent(JSON.stringify({
+                            event: "ojViewportChange",
+                            data: data
+                        }));
+                        window.location = "jet://" + queryString;
                     };
                     self.ojViewportChangeInput = function(event, data) {
-                        window.console.log("ojviewportchangeinput");
+                        var queryString = encodeURIComponent(JSON.stringify({
+                            event: "ojViewportChangeInput",
+                            data: data
+                        }));
+                        window.location = "jet://" + queryString;
                     };
                 }
                 var items = JSON.parse(itemsString);
