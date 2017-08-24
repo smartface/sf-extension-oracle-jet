@@ -468,9 +468,27 @@ function JET(params){
     
     _webView.onChangedURL = function(event){
         if(event.url.indexOf('jet://') != -1){
-            var queryString = event.url.replace('jet://','');
-            var jsonData = decodeURIComponent(queryString);
-            var object = JSON.parse(jsonData);
+            var eventObject = JSON.parse(decodeURIComponent(event.url.replace('jet://','')));
+            switch (eventObject.event) {
+                case 'ojDestroy':
+                    _onDestory && _onDestory(eventObject.data);
+                    break;
+                case 'ojDrill':
+                    _onDrill && _onDrill(eventObject.data);
+                    break;
+                case 'ojOptionChange':
+                    _onOptionChange && _onOptionChange(eventObject.data);
+                    break;
+                case 'ojSelectInput':
+                    _onSelectInput && _onSelectInput(eventObject.data);
+                    break;
+                case 'ojViewportChange':
+                    _onViewportChange && _onViewportChange(eventObject.data);
+                    break;
+                case 'ojViewportChangeInput':
+                    _onViewportChangeInput && _onViewportChangeInput(eventObject.data);
+                    break;
+            }
             return false;
         }
         return true;
