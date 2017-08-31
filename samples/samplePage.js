@@ -7,7 +7,6 @@ const Button = require('sf-core/ui/button');
 const Font = require('sf-core/ui/font');
 const ScrollView = require('sf-core/ui/scrollview');
 const JET = require('sf-extension-oracle-jet');
-const AlertUtil = require('sf-extension-utils/alert');
 const HeaderBarItem = require('sf-core/ui/headerbaritem');
 const Router = require("sf-core/router");
 
@@ -153,7 +152,7 @@ var page1 = extend(Page)(
 			textColor: Color.WHITE,
 			onPress: function() {
 				myJetView.jetData.borderColor = getRandomColorString();
-				AlertUtil.showAlert("borderColor: " + myJetView.jetData.borderColor);
+				alert("borderColor: " + myJetView.jetData.borderColor);
 				myJetView.refresh();
 			}
 		});
@@ -169,7 +168,7 @@ var page1 = extend(Page)(
 			textColor: Color.WHITE,
 			onPress: function() {
 				myJetView.legend.backgroundColor = getRandomColorString();
-				AlertUtil.showAlert("legend.backgroundColor: " + myJetView.legend.backgroundColor);
+				alert("legend.backgroundColor: " + myJetView.legend.backgroundColor);
 				myJetView.refresh();
 			}
 		});
@@ -184,7 +183,7 @@ var page1 = extend(Page)(
 			textColor: Color.WHITE,
 			onPress: function() {
 				myJetView.legend.borderColor = getRandomColorString();
-				AlertUtil.showAlert("legend.borderColor: " + myJetView.legend.borderColor);
+				alert("legend.borderColor: " + myJetView.legend.borderColor);
 				myJetView.refresh();
 			}
 		});
@@ -201,7 +200,7 @@ var page1 = extend(Page)(
 			onPress: function() {
 				var propertyValue = JET.LegendPosition[Object.keys(JET.LegendPosition)[legendPositionCounter]];
 				myJetView.legend.position = propertyValue;
-				AlertUtil.showAlert("LegendPosition: " + propertyValue);
+				alert("LegendPosition: " + propertyValue);
 				legendPositionCounter = ++legendPositionCounter % Object.keys(JET.LegendPosition).length;
 				myJetView.refresh();
 			}
@@ -219,7 +218,7 @@ var page1 = extend(Page)(
 			onPress: function() {
 				var propertyValue = JET.LegendRendered[Object.keys(JET.LegendRendered)[legendRenderedCounter]];
 				myJetView.legend.rendered = propertyValue;
-				AlertUtil.showAlert("LegendRendered: " + propertyValue);
+				alert("LegendRendered: " + propertyValue);
 				legendRenderedCounter = ++legendRenderedCounter % Object.keys(JET.LegendRendered).length;
 				myJetView.refresh();
 			}
@@ -237,7 +236,7 @@ var page1 = extend(Page)(
 			onPress: function() {
 				var propertyValue = JET.LegendScrolling[Object.keys(JET.LegendScrolling)[legendScrollingCounter]];
 				myJetView.legend.rendered = propertyValue;
-				AlertUtil.showAlert("LegendScrolling: " + propertyValue);
+				alert("LegendScrolling: " + propertyValue);
 				legendScrollingCounter = ++legendScrollingCounter % Object.keys(JET.LegendScrolling).length;
 				myJetView.refresh();
 			}
@@ -253,7 +252,7 @@ var page1 = extend(Page)(
 			textColor: Color.WHITE,
 			onPress: function() {
 				myJetView.plotArea.backgroundColor = getRandomColorString();
-				AlertUtil.showAlert("legend.plotArea: " + myJetView.plotArea.backgroundColor);
+				alert("legend.plotArea: " + myJetView.plotArea.backgroundColor);
 				myJetView.refresh();
 			}
 		});
@@ -268,7 +267,7 @@ var page1 = extend(Page)(
 			textColor: Color.WHITE,
 			onPress: function() {
 				myJetView.plotArea.borderColor = getRandomColorString();
-				AlertUtil.showAlert("plotArea.borderColor: " + myJetView.plotArea.borderColor);
+				alert("plotArea.borderColor: " + myJetView.plotArea.borderColor);
 				myJetView.refresh();
 			}
 		});
@@ -283,7 +282,7 @@ var page1 = extend(Page)(
 			textColor: Color.WHITE,
 			onPress: function() {
 				myJetView.plotArea.borderWidth = myJetView.plotArea.borderWidth ? myJetView.plotArea.borderWidth + 1 : 1;
-				AlertUtil.showAlert("plotArea.borderWidth: " + myJetView.plotArea.borderWidth);
+				alert("plotArea.borderWidth: " + myJetView.plotArea.borderWidth);
 				myJetView.refresh();
 			}
 		});
@@ -300,7 +299,7 @@ var page1 = extend(Page)(
 			onPress: function() {
 				var propertyValue = JET.PlotAreaRendered[Object.keys(JET.PlotAreaRendered)[plotAreaRenderedCounter]];
 				myJetView.plotArea.rendered = propertyValue;
-				AlertUtil.showAlert("PlotAreaRendered: " + propertyValue);
+				alert("PlotAreaRendered: " + propertyValue);
 				plotAreaRenderedCounter = ++plotAreaRenderedCounter % Object.keys(JET.PlotAreaRendered).length;
 				myJetView.refresh();
 			}
@@ -316,7 +315,7 @@ var page1 = extend(Page)(
 			textColor: Color.WHITE,
 			onPress: function() {
 				myJetView.splitterPosition = Math.random();
-				AlertUtil.showAlert("splitterPosition: " + myJetView.splitterPosition);
+				alert("splitterPosition: " + myJetView.splitterPosition);
 				myJetView.refresh();
 			}
 		});
@@ -334,7 +333,7 @@ var page1 = extend(Page)(
 				onPress: function() {
 					var propertyValue = JET[this.text][Object.keys(JET[this.text])[counters[this.propertyName]]];
 					myJetView[this.propertyName] = propertyValue;
-					AlertUtil.showAlert(this.text + ": " + propertyValue);
+					alert(this.text + ": " + propertyValue);
 					counters[this.propertyName] = ++counters[this.propertyName] % Object.keys(JET[this.text]).length;
 					myJetView.refresh();
 				}
