@@ -1,4 +1,3 @@
-const extend    = require('js-base/core/extend');
 const WebView   = require("sf-core/ui/webview");
 const File      = require('sf-core/io/file');
 

@@ -55,7 +55,7 @@ var drawChart;
                 function ChartModel(items) {
                     var self = this;
                     /* toggle button variables */
-                    Object.keys(items.observables).forEach(function(key) {
+                    items.observables && Object.keys(items.observables).forEach(function(key) {
                         self[key] = ko.observable(items.observables[key]);
                     });
 
@@ -109,11 +109,14 @@ var drawChart;
                     };
                 }
                 var items = JSON.parse(itemsString);
+                items.preScript && eval(items.preScript);
                 var chartModel = new ChartModel(items);
 
                 $(function() {
+                    
                     ko.applyBindings(chartModel, document.getElementById('chart-container'));
                     items.backgroundColor && $("#chart-container > div").css("backgroundColor", items.backgroundColor);
+                    items.postScript && eval(items.postScript);
                 });
             });
     };
