@@ -30,4 +30,4 @@ Please read and follow our [Code of Conduct](https://github.com/smartface/sf-ext
 
 ## License
 
-This project is licensed under the terms of the MIT license. See the [LICENSE](https://raw.githubusercontent.com/smartface/sf-extension-oracle-jet/master/LICENSE) file. Within the scope of this license, all modifications to the source code, regardless of the fact that it is used commercially or not, shall be committed as a contribution back to this repository.
+This project is licensed under the terms of the UPL license. See the [LICENSE](https://raw.githubusercontent.com/smartface/sf-extension-oracle-jet/master/LICENSE) file. Within the scope of this license, all modifications to the source code, regardless of the fact that it is used commercially or not, shall be committed as a contribution back to this repository.
